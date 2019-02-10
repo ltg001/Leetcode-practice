@@ -177,3 +177,70 @@ Follow up: Could you optimize your algorithm to use only O(k) extra space?
         };
     Think about calculate the next line with the previous one iteratively.
     Use two *for* loop to complete the calculation.
+
+### [Reverse Linked List](https://leetcode.com/explore/learn/card/recursion-i/251/scenario-i-recurrence-relation/2378/)
+
+Reverse a singly linked list.
+
+Example:
+
+    Input: 1->2->3->4->5->NULL
+    Output: 5->4->3->2->1->NULL
+Follow up:
+A linked list can be reversed either iteratively or recursively. Could you implement both?
+
+#### Solution
+
+1. **iteratively**
+
+        /**
+        * Definition for singly-linked list.
+        * struct ListNode {
+        *     int val;
+        *     ListNode *next;
+        *     ListNode(int x) : val(x), next(NULL) {}
+        * };
+        */
+        class Solution {
+        public:
+            ListNode* reverseList(ListNode* head) {
+                ListNode* newHead = NULL;
+                while(head) {
+                    ListNode* temp = head -> next;
+                    head -> next = newHead;
+                    newHead = head;
+                    head = temp;
+                }
+                return newHead;
+            }
+        };
+    Set a newHead(ListNode pointer), initialized with NULL. Make it a new head of the linked list and put the rest nodes behind the position.
+
+        newHead = NULL                head = [1 -> 2 -> 3 -> 4 -> 5]
+        newHead = [1]                 head = [2 -> 3 -> 4 -> 5]
+        newHead = [2 -> 1]            head = [3 -> 4 -> 5]
+        ......
+
+2. **recursively**
+
+        /**
+        * Definition for singly-linked list.
+        * struct ListNode {
+        *     int val;
+        *     ListNode *next;
+        *     ListNode(int x) : val(x), next(NULL) {}
+        * };
+        */
+        class Solution {
+        public:
+            ListNode* reverseList(ListNode* head) {
+                if(!head || ! head -> next)
+                    return head;
+                ListNode* newHead = reverseList(head -> next);
+                head -> next -> next = head;
+                head -> next = NULL;
+                return newHead;
+            }
+        };
+    - find the tail node recursively
+    - move one privious node right after the tail node (head -> next -> next = head) ===> the relative position is consistent
