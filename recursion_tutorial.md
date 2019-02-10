@@ -175,5 +175,5 @@ Follow up: Could you optimize your algorithm to use only O(k) extra space?
                 return res;
             }
         };
-    Think about calculate the next line with the previous one recursively.
+    Think about calculate the next line with the previous one iteratively.
     Use two *for* loop to complete the calculation.
