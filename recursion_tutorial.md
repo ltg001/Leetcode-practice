@@ -34,6 +34,20 @@ There are two important things that one needs to figure out before implementing 
 
 > Once we figure out the above two elements, to implement a recursive function we simply call the function itself according to the **recurrence relation** until we reach the **base case**.
 
+### Memoization
+
+Recursion is often an intuitive and powerful way to implement an algorithm. However, it might bring some undesired penalty to the performance, *e.g.* duplicate calculations, if we do not use it wisely. For instance, at the end of the previous chapter, we have encountered the duplicate calculations problem in Pascal's Triangle, **where some intermediate results are calculated multiple times.**
+To eliminate the duplicate calculation, as many of you would have figured out, one of the ideas would be to store the intermediate results in the cache so that we could reuse them later without re-calculation.
+This idea is also known as memoization, which is a technique that is frequently used together with recursion.
+
+> Memoization is an optimization technique used primarily to speed up computer programs by storing the results of expensive function calls and returning the cached result when the same inputs occur again.
+
+### Complexity Analysis
+
+[Time Complexity - Recursion](https://leetcode.com/explore/learn/card/recursion-i/256/complexity-analysis/1669/)
+[Space Complexity - Recursion](https://leetcode.com/explore/learn/card/recursion-i/256/complexity-analysis/1671/)
+[Tail Recursion](https://leetcode.com/explore/learn/card/recursion-i/256/complexity-analysis/2374/)
+
 ## Examples
 
 ### [Reverse String](https://leetcode.com/explore/learn/card/recursion-i/250/principle-of-recursion/1440/)
@@ -146,6 +160,7 @@ Follow up: Could you optimize your algorithm to use only O(k) extra space?
 
 1. **Naive Edition**
 
+```cpp
         class Solution {
         public:
             vector<int> getRow(int rowIndex) {
@@ -159,9 +174,13 @@ Follow up: Could you optimize your algorithm to use only O(k) extra space?
                 return ans[rowIndex];
             }
         };
-    This solution calculates every line of the triangle. Obvously, the extra space used more than O(k).
+```
+
+This solution calculates every line of the triangle. Obvously, the extra space used more than O(k).
+
 2. **O(k) Space Complexity Edition**
 
+```cpp
         class Solution {
         public:
             vector<int> getRow(int rowIndex) {
@@ -175,8 +194,9 @@ Follow up: Could you optimize your algorithm to use only O(k) extra space?
                 return res;
             }
         };
-    Think about calculate the next line with the previous one iteratively.
-    Use two *for* loop to complete the calculation.
+```
+
+Think about calculate the next line with the previous one iteratively. Use two *for* loop to complete the calculation.
 
 ### [Reverse Linked List](https://leetcode.com/explore/learn/card/recursion-i/251/scenario-i-recurrence-relation/2378/)
 
@@ -193,6 +213,7 @@ A linked list can be reversed either iteratively or recursively. Could you imple
 
 1. **iteratively**
 
+```cpp
         /**
         * Definition for singly-linked list.
         * struct ListNode {
@@ -214,8 +235,13 @@ A linked list can be reversed either iteratively or recursively. Could you imple
                 return newHead;
             }
         };
-    Set a newHead(ListNode pointer), initialized with NULL. Make it a new head of the linked list and put the rest nodes behind the position.
+```
 
+    Set a newHead(ListNode pointer), initialized with NULL. Make it a new head of the linked list and put the rest nodes behind the position.
+<br>
+    Time Complexity `O(n)`
+    Space Complexity `O(1)`
+<br>
         newHead = NULL                head = [1 -> 2 -> 3 -> 4 -> 5]
         newHead = [1]                 head = [2 -> 3 -> 4 -> 5]
         newHead = [2 -> 1]            head = [3 -> 4 -> 5]
@@ -244,3 +270,150 @@ A linked list can be reversed either iteratively or recursively. Could you imple
         };
     - find the tail node recursively
     - move one privious node right after the tail node (head -> next -> next = head) ===> the relative position is consistent
+    <br>
+        Time Complexity `O(n)`
+        Space Complexity `O(n)`
+    <br>
+
+### [Fibonacci Number](https://leetcode.com/explore/learn/card/recursion-i/255/recursion-memoization/1661/)
+
+The Fibonacci numbers, commonly denoted F(n) form a sequence, called the Fibonacci sequence, such that each number is the sum of the two preceding ones, starting from 0 and 1. That is,
+
+    F(0) = 0,   F(1) = 1
+    F(N) = F(N - 1) + F(N - 2), for N > 1.
+Given N, calculate F(N).
+
+Example 1:
+
+    Input: 2
+    Output: 1
+    Explanation: F(2) = F(1) + F(0) = 1 + 0 = 1.
+Example 2:
+
+    Input: 3
+    Output: 2
+    Explanation: F(3) = F(2) + F(1) = 1 + 1 = 2.
+Example 3:
+
+    Input: 4
+    Output: 3
+    Explanation: F(4) = F(3) + F(2) = 2 + 1 = 3.
+
+**Note:** 0 ≤ N ≤ 30.
+
+#### Solution
+
+```cpp
+class Solution {
+public:
+    int fib(int N) {
+        vector<int> v;
+        v.push_back(0);
+        v.push_back(1);
+        if(N == 0) return 0;
+        if(N == 1) return 1;
+        for(int i = 2; i <= N; ++i) {
+            v.push_back(v[i - 1] + v[i - 2]);
+        }
+        return v[N];
+    }
+};
+```
+
+It is easy to figure out that F(0) and F(1) will be used many times. Thus we can store them rather than calculate them many times.
+
+### [Climbing Stairs](https://leetcode.com/explore/learn/card/recursion-i/255/recursion-memoization/1662/)
+
+You are climbing a stair case. It takes n steps to reach to the top.
+
+Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
+
+Note: Given n will be a positive integer.
+
+Example 1:
+
+    Input: 2
+    Output: 2
+    Explanation: There are two ways to climb to the top.
+    1. 1 step + 1 step
+    2. 2 steps
+Example 2:
+
+    Input: 3
+    Output: 3
+    Explanation: There are three ways to climb to the top.
+    1. 1 step + 1 step + 1 step
+    2. 1 step + 2 steps
+    3. 2 steps + 1 step
+
+#### Solution
+
+```cpp
+class Solution {
+public:
+    int climbStairs(int n) {
+        vector<int> v;
+        v.push_back(1);
+        v.push_back(2);
+        if(n == 1) return 1;
+        if(n == 2) return 2;
+        for(int i = 2; i < n; ++ i) {
+            v.push_back(v[i - 1] + v[i - 2]);
+        }
+        return v[n - 1];
+    }
+};
+```
+
+Thoughts:
+
+1. Declear an array Array[n], and each element means how many ways can you get to this stair. For example, Array[x] == 10 means there are 10 ways to reach stair #10.
+2. Figure out how to reach a new stair.
+   1. From position x-2, climb 2 stairs to get to get position x.
+   2. From position x-1, climb 1 stair to get to get position x.
+===> Array[x] = Array[x - 1] + Array[x - 2]
+
+### [Maximum Depth of Binary Tree](https://leetcode.com/explore/learn/card/recursion-i/256/complexity-analysis/2375/)
+
+Given a binary tree, find its maximum depth.
+
+The maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.
+
+Note: A leaf is a node with no children.
+
+Example:
+
+Given binary tree `[3,9,20,null,null,15,7]`,
+
+```
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+
+return its depth = 3.
+
+#### Solution
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    int maxDepth(TreeNode* root) {
+        if(!root) return 0;
+        return max(maxDepth(root -> left), maxDepth(root -> right)) + 1;
+    }
+};
+```
+
+simple question
