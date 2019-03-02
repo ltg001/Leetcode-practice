@@ -249,6 +249,7 @@ A linked list can be reversed either iteratively or recursively. Could you imple
 
 2. **recursively**
 
+```cpp
         /**
         * Definition for singly-linked list.
         * struct ListNode {
@@ -268,8 +269,10 @@ A linked list can be reversed either iteratively or recursively. Could you imple
                 return newHead;
             }
         };
-    - find the tail node recursively
-    - move one privious node right after the tail node (head -> next -> next = head) ===> the relative position is consistent
+```
+
+- find the tail node recursively
+- move one privious node right after the tail node (head -> next -> next = head) ===> the relative position is consistent
     <br>
         Time Complexity `O(n)`
         Space Complexity `O(n)`
@@ -417,3 +420,86 @@ public:
 ```
 
 simple question
+
+### [K-th Symbol in Grammar](https://leetcode.com/explore/learn/card/recursion-i/253/conclusion/1675/)
+
+On the first row, we write a 0. Now in every subsequent row, we look at the previous row and replace each occurrence of 0 with 01, and each occurrence of 1 with 10.
+
+Given row N and index K, return the K-th indexed symbol in row N. (The values of K are 1-indexed.) (1 indexed).
+
+Examples:
+    Input: N = 1, K = 1
+    Output: 0
+
+    Input: N = 2, K = 1
+    Output: 0
+
+    Input: N = 2, K = 2
+    Output: 1
+
+    Input: N = 4, K = 5
+    Output: 1
+
+    Explanation:
+    row 1: 0
+    row 2: 01
+    row 3: 0110
+    row 4: 01101001
+
+**Note:**
+
+1. N will be an integer in the range [1, 30].
+2. K will be an integer in the range [1, 2^(N-1)].
+
+#### Solution
+
+1. Naive Solution
+
+    Pretty simple thoughts: store all intermediate results in a 2 dimentions vector.
+    But get **MLE**.
+
+```cpp
+    class Solution {
+    public:
+        int kthGrammar(int N, int K) {
+            vector<vector<int>> v;
+            v.resize(N, vector<int>());
+            v[0].push_back(0);
+            
+            if(N == 1) return 0;
+            
+            for(int i = 1; i < N; i++) {
+                for(int j = 0; j < v[i - 1].size(); ++ j) {
+                    if(v[i - 1][j] == 0) {
+                        v[i].push_back(0);
+                        v[i].push_back(1);
+                    }
+                    else {
+                        v[i].push_back(1);
+                        v[i].push_back(0);
+                    }
+                }
+            }
+            return v[N - 1][K - 1];
+        }
+    };
+```
+
+2. Tree Model Solution
+
+    The problem require viewing `0` as `01` and `1` as `10`. Thus it forms a binary tree. It is obvious that using recursion is a great approach.
+    *The biggest problem in `recursive relation` is finding the relation itself.*
+
+```cpp
+    class Solution {
+    public:
+        int kthGrammar(int N, int K) {
+            if(N == 0) return 0;
+            if(K & 1) return kthGrammar(N - 1, (K + 1) / 2) == 0 ? 0 : 1;
+            else return kthGrammar(N - 1, K / 2) == 0 ? 1 : 0;
+        }
+    };
+```
+
+### [Unique Binary Search Trees II](https://leetcode.com/explore/learn/card/recursion-i/253/conclusion/2384/)
+
