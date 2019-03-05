@@ -72,7 +72,7 @@ public:
 ```
 
 Then try with DP.
-First from the vary beginning, if n == 1, return 0. If n is even, needless to say, the answer f(n) = 1 + f(n/2). Otherwise f(n) = 2 + min(f(n/2), f((n + 1)/2).
+First from the vary beginning, if n == 1, return 0. If n is even, needless to say, the answer f(n) = 1 + f(n/2). Otherwise f(n) = 2 + min(f(n/2), f((n + 1)/2). ===> If it is odd, frist add or minus 1, then divide it by 2. So consider replace the procedure with directly find min between f(n/2) and f((n + 1)/2).
 Another optimize is memorize. we store all results we have done to avoid redundant computing.
 
 ```cpp
